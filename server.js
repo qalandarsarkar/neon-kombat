@@ -14,6 +14,11 @@ app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
   res.sendStatus(200);
 });
 
+// Add this before app.listen
+app.get('/', (req, res) => {
+  res.status(200).send('Bot is active and running!');
+});
+
 const PORT = process.env.PORT || 8080;
 
 // Server start hone ke baad Webhook register karein
@@ -27,4 +32,9 @@ app.listen(PORT, '0.0.0.0', async () => {
   } catch (error) {
     console.error("Webhook setup failed:", error);
   }
+});
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  process.exit(0);
 });
