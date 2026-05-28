@@ -1,15 +1,15 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
 
-// Polling false taaki Railway par crash na ho
+// Polling false to prevent crash on Railway
 const bot = new TelegramBot(token, { polling: false });
 
-// Webhook automatic Railway URL uthayega
+// Webhook will automatically fetch the Railway URL
 bot.setWebHook(`${process.env.RAILWAY_URL}/bot${token}`);
 
 bot.onText(/\/start/, (msg) => {
-  bot.sendMessage(msg.chat.id, `🚀 *Welcome to Neon Kombat!* \n\nGame khelne ke liye niche button par click karein.`, {
+  bot.sendMessage(msg.chat.id, `🚀 *Welcome to Neon Kombat!* \n\nClick the button below to play the game.`, {
     parse_mode: 'Markdown',
     reply_markup: {
       inline_keyboard: [
