@@ -8,40 +8,124 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      margin: 0; padding: 0; background: radial-gradient(circle at center, #1a1a2e, #0f0f1b);
+      margin: 0; padding: 0;
+      background: radial-gradient(circle at center, #1a1a2e, #0f0f1b);
       color: #fff; font-family: 'Segoe UI', Roboto, sans-serif;
       display: flex; flex-direction: column; align-items: center; justify-content: space-between;
       height: 100vh; overflow: hidden;
     }
-    .header { width: 100%; padding: 20px; display: flex; align-items: center; justify-content: space-between; }
-    .user-tag { background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; border: 1px solid #00f2fe; box-shadow: 0 0 10px rgba(0, 242, 254, 0.2); font-weight: bold; }
-    .score-container { text-align: center; margin-top: 20px; }
-    .score-title { font-size: 0.9rem; color: #8a8a9e; text-transform: uppercase; letter-spacing: 2px; }
+    .header {
+      width: 100%; padding: 15px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .user-tag {
+      background: rgba(255,255,255,0.1); padding: 8px 16px;
+      border-radius: 20px; border: 1px solid #00f2fe;
+      box-shadow: 0 0 10px rgba(0,242,254,0.2); font-weight: bold; font-size: 0.9rem;
+    }
+    .save-status {
+      font-size: 0.75rem; color: #8a8a9e; padding: 4px 10px;
+      border-radius: 10px; background: rgba(255,255,255,0.05);
+    }
+    .save-status.saved { color: #00f2fe; }
+    .save-status.saving { color: #ffaa00; }
+    .save-status.error { color: #ff4444; }
+
+    .score-container { text-align: center; margin-top: 10px; }
+    .score-title { font-size: 0.85rem; color: #8a8a9e; text-transform: uppercase; letter-spacing: 2px; }
     .score { font-size: 3.5rem; font-weight: 900; color: #00f2fe; text-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe; margin: 5px 0; }
-    
-    .coin-container { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 40vh; }
+
+    .coin-container {
+      position: relative; display: flex; justify-content: center;
+      align-items: center; width: 100%; height: 38vh;
+    }
     .coin-button {
       width: 200px; height: 200px; border-radius: 50%;
       background: linear-gradient(145deg, #00f2fe, #4facfe);
       box-shadow: 0 0 30px #00f2fe, inset 0 0 20px rgba(255,255,255,0.6);
-      display: flex; align-items: center; justify-content: center; font-size: 5.5rem;
-      cursor: pointer; transition: transform 0.05s ease; user-select: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5.5rem; cursor: pointer;
+      transition: transform 0.05s ease; user-select: none;
     }
     .coin-button:active { transform: scale(0.95); box-shadow: 0 0 50px #00f2fe; }
+    .coin-button.disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .energy-container { width: 90%; max-width: 400px; padding: 20px; margin-bottom: 20px; text-align: center; }
-    .energy-text { font-size: 1.1rem; margin-bottom: 8px; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; font-weight: bold; }
-    .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,0,255,0.3); }
-    .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ff00ff, #7928ca); border-radius: 6px; transition: width 0.1s linear; }
-    
-    .floating-text { position: absolute; font-size: 1.8rem; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; animation: floatUp 0.6s ease-out forwards; pointer-events: none; }
-    @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.2); } }
+    .energy-container {
+      width: 90%; max-width: 400px; padding: 15px 20px;
+      margin-bottom: 10px; text-align: center;
+    }
+    .energy-text {
+      font-size: 1.1rem; margin-bottom: 8px; color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff; font-weight: bold;
+    }
+    .progress-bar {
+      width: 100%; height: 12px; background: rgba(255,255,255,0.1);
+      border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,0,255,0.3);
+    }
+    .progress-fill {
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, #ff00ff, #7928ca);
+      border-radius: 6px; transition: width 0.1s linear;
+    }
+
+    /* Leaderboard */
+    .leaderboard {
+      width: 90%; max-width: 400px; margin-bottom: 15px;
+      background: rgba(255,255,255,0.05); border-radius: 12px;
+      border: 1px solid rgba(0,242,254,0.2); overflow: hidden;
+    }
+    .lb-title {
+      text-align: center; padding: 8px; font-size: 0.8rem;
+      color: #00f2fe; text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 1px solid rgba(0,242,254,0.2);
+    }
+    .lb-list { list-style: none; margin: 0; padding: 5px 10px; }
+    .lb-list li {
+      display: flex; justify-content: space-between;
+      padding: 4px 0; font-size: 0.8rem; color: #ccc;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .lb-list li:last-child { border-bottom: none; }
+    .lb-list li.me { color: #00f2fe; font-weight: bold; }
+    .lb-rank { margin-right: 8px; color: #8a8a9e; }
+
+    .floating-text {
+      position: absolute; font-size: 1.8rem; font-weight: bold;
+      color: #00f2fe; text-shadow: 0 0 10px #00f2fe;
+      animation: floatUp 0.6s ease-out forwards; pointer-events: none;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-100px) scale(1.2); }
+    }
+
+    .loading-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0f0f1b; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 999;
+      transition: opacity 0.5s;
+    }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .loading-text { color: #00f2fe; font-size: 1.2rem; margin-top: 20px; }
+    .spinner {
+      width: 50px; height: 50px; border: 3px solid rgba(0,242,254,0.3);
+      border-top-color: #00f2fe; border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
+  <!-- Loading Screen -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Neon Kombat...</div>
+  </div>
+
   <div class="header">
     <div class="user-tag" id="username">Player</div>
+    <div class="save-status" id="saveStatus">Connecting...</div>
   </div>
 
   <div class="score-container">
@@ -60,53 +144,149 @@
     </div>
   </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Full screen open hoga
+  <!-- Leaderboard -->
+  <div class="leaderboard">
+    <div class="lb-title">🏆 Top Players</div>
+    <ul class="lb-list" id="leaderboardList">
+      <li><span>Loading...</span></li>
+    </ul>
+  </div>
 
-    // Telegram User Name load karein
-    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      document.getElementById('username').innerText = `@${tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name}`;
-    }
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzg-_imaxBIWlQqFmOkkzMenj7aaumghU",
+      authDomain: "neon-kombat.firebaseapp.com",
+      databaseURL: "https://neon-kombat-default-rtdb.firebaseio.com",
+      projectId: "neon-kombat",
+      storageBucket: "neon-kombat.firebasestorage.app",
+      messagingSenderId: "974101662583",
+      appId: "1:974101662583:web:103363a4b259f2f0306f72"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Telegram setup
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const tgUser = tg.initDataUnsafe?.user;
+    const userId = tgUser?.id ? `user_${tgUser.id}` : `guest_${Math.random().toString(36).substr(2, 9)}`;
+    const userName = tgUser?.username || tgUser?.first_name || "Player";
+
+    document.getElementById('username').innerText = `@${userName}`;
 
     // Game Variables
-    let score = parseInt(localStorage.getItem('neon_score')) || 0;
-    let energy = parseInt(localStorage.getItem('neon_energy')) || 1000;
+    let score = 0;
+    let energy = 1000;
     const maxEnergy = 1000;
+    let saveTimeout = null;
+    let isLoaded = false;
 
     const scoreEl = document.getElementById('score');
     const energyTextEl = document.getElementById('energyText');
     const energyFillEl = document.getElementById('energyFill');
     const coinBtn = document.getElementById('coinBtn');
+    const saveStatusEl = document.getElementById('saveStatus');
+    const loadingOverlay = document.getElementById('loadingOverlay');
 
-    // Initial Load
-    scoreEl.innerText = score;
-    updateEnergyUI();
+    function setStatus(text, type) {
+      saveStatusEl.textContent = text;
+      saveStatusEl.className = `save-status ${type}`;
+    }
 
     function updateEnergyUI() {
       energyTextEl.innerText = `${energy} / ${maxEnergy}`;
       energyFillEl.style.width = `${(energy / maxEnergy) * 100}%`;
     }
 
-    // Tap Function
-    coinBtn.addEventListener('click', (e) => {
-      if (energy > 0) {
-        score += 1;
-        energy -= 1;
-        
+    // Load user data from Firebase
+    async function loadUserData() {
+      try {
+        const userRef = ref(db, `users/${userId}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          score = data.score || 0;
+          energy = data.energy || 1000;
+
+          // Energy refill jo time pass hua us ka
+          const lastSeen = data.lastSeen || Date.now();
+          const timePassed = Math.floor((Date.now() - lastSeen) / 1000);
+          const energyRegained = timePassed * 2;
+          energy = Math.min(maxEnergy, energy + energyRegained);
+        } else {
+          // New user
+          await set(ref(db, `users/${userId}`), {
+            username: userName,
+            score: 0,
+            energy: 1000,
+            lastSeen: Date.now(),
+            joinedAt: Date.now()
+          });
+        }
+
         scoreEl.innerText = score;
         updateEnergyUI();
-        
-        // Save data local storage mein
-        localStorage.setItem('neon_score', score);
-        localStorage.setItem('neon_energy', energy);
-
-        // Floating "+1" Effect
-        createFloatingText(e.clientX, e.clientY);
-
-        // Haptic Feedback (Vibration)
-        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        setStatus('✓ Connected', 'saved');
+        isLoaded = true;
+        loadingOverlay.classList.add('hidden');
+        loadLeaderboard();
+      } catch (err) {
+        setStatus('Offline', 'error');
+        // Fallback to localStorage
+        score = parseInt(localStorage.getItem('neon_score')) || 0;
+        energy = parseInt(localStorage.getItem('neon_energy')) || 1000;
+        scoreEl.innerText = score;
+        updateEnergyUI();
+        isLoaded = true;
+        loadingOverlay.classList.add('hidden');
       }
+    }
+
+    // Save to Firebase (debounced)
+    function saveData() {
+      setStatus('Saving...', 'saving');
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(async () => {
+        try {
+          await set(ref(db, `users/${userId}`), {
+            username: userName,
+            score: score,
+            energy: energy,
+            lastSeen: Date.now()
+          });
+          setStatus('✓ Saved', 'saved');
+          // Also update leaderboard
+          await set(ref(db, `leaderboard/${userId}`), {
+            username: userName,
+            score: score
+          });
+        } catch (err) {
+          setStatus('Offline', 'error');
+          localStorage.setItem('neon_score', score);
+          localStorage.setItem('neon_energy', energy);
+        }
+      }, 2000);
+    }
+
+    // Tap Function
+    coinBtn.addEventListener('click', (e) => {
+      if (!isLoaded || energy <= 0) return;
+
+      score += 1;
+      energy -= 1;
+
+      scoreEl.innerText = score;
+      updateEnergyUI();
+      saveData();
+      createFloatingText(e.clientX, e.clientY);
+
+      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     });
 
     function createFloatingText(x, y) {
@@ -116,18 +296,45 @@
       text.style.left = `${x - 15}px`;
       text.style.top = `${y - 30}px`;
       document.body.appendChild(text);
-      
       setTimeout(() => text.remove(), 600);
     }
 
-    // Energy Refill Over Time (Har 1 second mein +2 energy)
+    // Energy Refill
     setInterval(() => {
       if (energy < maxEnergy) {
         energy = Math.min(maxEnergy, energy + 2);
-        localStorage.setItem('neon_energy', energy);
         updateEnergyUI();
       }
     }, 1000);
+
+    // Leaderboard
+    function loadLeaderboard() {
+      const lbRef = query(ref(db, 'leaderboard'), orderByChild('score'), limitToLast(5));
+      onValue(lbRef, (snapshot) => {
+        const list = document.getElementById('leaderboardList');
+        list.innerHTML = '';
+        if (!snapshot.exists()) {
+          list.innerHTML = '<li><span>No players yet</span></li>';
+          return;
+        }
+
+        const players = [];
+        snapshot.forEach(child => players.push({ id: child.key, ...child.val() }));
+        players.sort((a, b) => b.score - a.score);
+
+        players.forEach((player, index) => {
+          const li = document.createElement('li');
+          if (player.id === userId) li.classList.add('me');
+          const medals = ['🥇', '🥈', '🥉'];
+          const rank = medals[index] || `${index + 1}.`;
+          li.innerHTML = `<span><span class="lb-rank">${rank}</span>@${player.username}</span><span>${player.score.toLocaleString()}</span>`;
+          list.appendChild(li);
+        });
+      });
+    }
+
+    // Start
+    loadUserData();
   </script>
 </body>
 </html>
