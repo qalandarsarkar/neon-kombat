@@ -1,11 +1,10 @@
-require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.BOT_TOKEN;
 
-// Polling false to prevent crash on Railway
+// Webhook mode mein polling false hona chahiye
 const bot = new TelegramBot(token, { polling: false });
 
-// Webhook will automatically fetch the Railway URL
+// Webhook setup
 bot.setWebHook(`${process.env.RAILWAY_URL}/bot${token}`);
 
 bot.onText(/\/start/, (msg) => {
