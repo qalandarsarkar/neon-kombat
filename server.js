@@ -28,7 +28,7 @@ app.listen(PORT, '0.0.0.0', async () => {
   try {
     const url = process.env.RAILWAY_URL;
     await bot.setWebHook(`${url}/bot${process.env.BOT_TOKEN}`);
-    console.log(`Webhook set to: ${url}`);
+    console.log(`Webhook set to: ${url}/bot${process.env.BOT_TOKEN}`);
   } catch (error) {
     console.error("Webhook setup failed:", error);
   }
