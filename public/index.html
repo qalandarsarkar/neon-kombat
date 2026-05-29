@@ -1,67 +1,169 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none" />
   <title>Neon Kombat Mini App</title>
+
+  <!-- Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
-  <!-- Firebase Compat (non-module) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       background: radial-gradient(circle at center, #1a1a2e, #0f0f1b);
-      color: #fff; font-family: 'Segoe UI', Roboto, sans-serif;
-      display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-      height: 100vh; overflow: hidden;
+      color: #fff;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      overflow: hidden;
     }
-    .header { width: 100%; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; }
-    .user-tag { background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; border: 1px solid #00f2fe; box-shadow: 0 0 10px rgba(0,242,254,0.2); font-weight: bold; font-size: 0.9rem; }
-    .save-status { font-size: 0.75rem; color: #8a8a9e; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.05); }
-    .save-status.saved { color: #00f2fe; }
-    .save-status.saving { color: #ffaa00; }
-    .save-status.error { color: #ff4444; }
 
-    .score-container { text-align: center; margin-top: 10px; }
-    .score-title { font-size: 0.85rem; color: #8a8a9e; text-transform: uppercase; letter-spacing: 2px; }
-    .score { font-size: 3.5rem; font-weight: 900; color: #00f2fe; text-shadow: 0 0 20px #00f2fe, 0 0 40px #4facfe; margin: 5px 0; }
+    .header {
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-    .coin-container { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 38vh; }
+    .user-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid #00f2fe;
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+      font-weight: bold;
+    }
+
+    .score-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .score-title {
+      font-size: 0.9rem;
+      color: #8a8a9e;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .score {
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #00f2fe;
+      text-shadow: 0 0 20px #00f2fe,
+                   0 0 40px #4facfe;
+      margin: 5px 0;
+    }
+
+    .coin-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 40vh;
+    }
+
     .coin-button {
-      width: 200px; height: 200px; border-radius: 50%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
       background: linear-gradient(145deg, #00f2fe, #4facfe);
-      box-shadow: 0 0 30px #00f2fe, inset 0 0 20px rgba(255,255,255,0.6);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 5.5rem; cursor: pointer; transition: transform 0.05s ease; user-select: none;
+      box-shadow: 0 0 30px #00f2fe,
+                  inset 0 0 20px rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5.5rem;
+      cursor: pointer;
+      transition: transform 0.05s ease;
+      user-select: none;
     }
-    .coin-button:active { transform: scale(0.95); box-shadow: 0 0 50px #00f2fe; }
 
-    .energy-container { width: 90%; max-width: 400px; padding: 15px 20px; margin-bottom: 10px; text-align: center; }
-    .energy-text { font-size: 1.1rem; margin-bottom: 8px; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; font-weight: bold; }
-    .progress-bar { width: 100%; height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,0,255,0.3); }
-    .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #ff00ff, #7928ca); border-radius: 6px; transition: width 0.1s linear; }
+    .coin-button:active {
+      transform: scale(0.95);
+      box-shadow: 0 0 50px #00f2fe;
+    }
 
-    .leaderboard { width: 90%; max-width: 400px; margin-bottom: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(0,242,254,0.2); overflow: hidden; }
-    .lb-title { text-align: center; padding: 8px; font-size: 0.8rem; color: #00f2fe; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(0,242,254,0.2); }
-    .lb-list { list-style: none; margin: 0; padding: 5px 10px; }
-    .lb-list li { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.8rem; color: #ccc; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .lb-list li:last-child { border-bottom: none; }
-    .lb-list li.me { color: #00f2fe; font-weight: bold; }
-    .lb-rank { margin-right: 8px; color: #8a8a9e; }
+    .energy-container {
+      width: 90%;
+      max-width: 400px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
 
-    .floating-text { position: absolute; font-size: 1.8rem; font-weight: bold; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; animation: floatUp 0.6s ease-out forwards; pointer-events: none; }
-    @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-100px) scale(1.2); } }
+    .energy-text {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #ff00ff;
+      text-shadow: 0 0 10px #ff00ff;
+      font-weight: bold;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255,0,255,0.3);
+    }
+
+    .progress-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff00ff, #7928ca);
+      border-radius: 6px;
+      transition: width 0.1s linear;
+    }
+
+    .floating-text {
+      position: absolute;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #00f2fe;
+      text-shadow: 0 0 10px #00f2fe;
+      animation: floatUp 0.6s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.2);
+      }
+    }
   </style>
 </head>
+
 <body>
 
   <div class="header">
     <div class="user-tag" id="username">Player</div>
-    <div class="save-status" id="saveStatus">Connecting...</div>
   </div>
 
   <div class="score-container">
@@ -70,25 +172,23 @@
   </div>
 
   <div class="coin-container">
-    <div class="coin-button" id="coinBtn">🦁</div>
+    <div class="coin-button" id="coinBtn">??</div>
   </div>
 
   <div class="energy-container">
     <div class="energy-text" id="energyText">1000 / 1000</div>
+
     <div class="progress-bar">
       <div class="progress-fill" id="energyFill"></div>
     </div>
   </div>
 
-  <div class="leaderboard">
-    <div class="lb-title">🏆 Top Players</div>
-    <ul class="lb-list" id="leaderboardList">
-      <li><span>Loading...</span></li>
-    </ul>
-  </div>
-
   <script>
-    // Firebase Config
+
+    /* =========================
+       FIREBASE CONFIG
+    ========================= */
+
     const firebaseConfig = {
       apiKey: "AIzaSyCzg-_imaxBIWlQqFmOkkzMenj7aaumghU",
       authDomain: "neon-kombat.firebaseapp.com",
@@ -100,151 +200,208 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
 
-    // Telegram setup
+    const db = firebase.firestore();
+
+    /* =========================
+       TELEGRAM SETUP
+    ========================= */
+
     const tg = window.Telegram.WebApp;
+
     tg.expand();
 
-    const tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
-    const userId = tgUser ? 'user_' + tgUser.id : 'guest_' + Math.random().toString(36).substr(2, 9);
-    const userName = tgUser ? (tgUser.username || tgUser.first_name || 'Player') : 'Player';
+    const tgUser = tg.initDataUnsafe?.user || {
+      id: "demo_user",
+      first_name: "Demo"
+    };
 
-    document.getElementById('username').innerText = '@' + userName;
+    const userId = String(tgUser.id);
 
-    // Game Variables
+    document.getElementById("username").innerText =
+      `@${tgUser.username || tgUser.first_name}`;
+
+    /* =========================
+       GAME VARIABLES
+    ========================= */
+
     let score = 0;
     let energy = 1000;
+
     const maxEnergy = 1000;
-    let saveTimeout = null;
-    let isLoaded = false;
 
-    const scoreEl = document.getElementById('score');
-    const energyTextEl = document.getElementById('energyText');
-    const energyFillEl = document.getElementById('energyFill');
-    const coinBtn = document.getElementById('coinBtn');
-    const saveStatusEl = document.getElementById('saveStatus');
+    const scoreEl = document.getElementById("score");
+    const energyTextEl = document.getElementById("energyText");
+    const energyFillEl = document.getElementById("energyFill");
+    const coinBtn = document.getElementById("coinBtn");
 
-    function setStatus(text, type) {
-      saveStatusEl.textContent = text;
-      saveStatusEl.className = 'save-status ' + type;
+    /* =========================
+       UPDATE UI
+    ========================= */
+
+    function updateUI() {
+
+      scoreEl.innerText = score;
+
+      energyTextEl.innerText =
+        `${energy} / ${maxEnergy}`;
+
+      energyFillEl.style.width =
+        `${(energy / maxEnergy) * 100}%`;
+
     }
 
-    function updateEnergyUI() {
-      energyTextEl.innerText = energy + ' / ' + maxEnergy;
-      energyFillEl.style.width = ((energy / maxEnergy) * 100) + '%';
-    }
+    /* =========================
+       LOAD PLAYER DATA
+    ========================= */
 
-    // Load user data
-    db.ref('users/' + userId).once('value').then(function(snapshot) {
-      if (snapshot.exists()) {
-        var data = snapshot.val();
-        score = data.score || 0;
-        energy = data.energy || 1000;
-        var lastSeen = data.lastSeen || Date.now();
-        var timePassed = Math.floor((Date.now() - lastSeen) / 1000);
-        energy = Math.min(maxEnergy, energy + (timePassed * 2));
-      } else {
-        db.ref('users/' + userId).set({
-          username: userName,
-          score: 0,
-          energy: 1000,
-          lastSeen: Date.now(),
-          joinedAt: Date.now()
-        });
+    async function loadPlayerData() {
+
+      try {
+
+        const docRef =
+          db.collection("players").doc(userId);
+
+        const docSnap =
+          await docRef.get();
+
+        if (docSnap.exists) {
+
+          const data = docSnap.data();
+
+          score = data.score || 0;
+          energy = data.energy || 1000;
+
+          console.log("Firebase Data Loaded");
+
+        } else {
+
+          score =
+            parseInt(localStorage.getItem("neon_score")) || 0;
+
+          energy =
+            parseInt(localStorage.getItem("neon_energy")) || 1000;
+
+          await savePlayerData();
+
+          console.log("New Player Created");
+        }
+
+        updateUI();
+
+      } catch (err) {
+
+        console.error("LOAD ERROR:", err);
+
       }
-      scoreEl.innerText = score;
-      updateEnergyUI();
-      setStatus('✓ Connected', 'saved');
-      isLoaded = true;
-      loadLeaderboard();
-    }).catch(function(err) {
-      setStatus('Offline', 'error');
-      score = parseInt(localStorage.getItem('neon_score')) || 0;
-      energy = parseInt(localStorage.getItem('neon_energy')) || 1000;
-      scoreEl.innerText = score;
-      updateEnergyUI();
-      isLoaded = true;
-    });
-
-    // Save data
-    function saveData() {
-      setStatus('Saving...', 'saving');
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(function() {
-        db.ref('users/' + userId).set({
-          username: userName,
-          score: score,
-          energy: energy,
-          lastSeen: Date.now()
-        }).then(function() {
-          setStatus('✓ Saved', 'saved');
-          db.ref('leaderboard/' + userId).set({
-            username: userName,
-            score: score
-          });
-        }).catch(function() {
-          setStatus('Offline', 'error');
-          localStorage.setItem('neon_score', score);
-          localStorage.setItem('neon_energy', energy);
-        });
-      }, 2000);
     }
 
-    // Tap
-    coinBtn.addEventListener('click', function(e) {
-      if (!isLoaded || energy <= 0) return;
+    /* =========================
+       SAVE PLAYER DATA
+    ========================= */
+
+    async function savePlayerData() {
+
+      try {
+
+        await db.collection("players")
+          .doc(userId)
+          .set({
+            name: tgUser.first_name || "Player",
+            username: tgUser.username || "",
+            score: score,
+            energy: energy,
+            updatedAt: Date.now()
+          });
+
+        localStorage.setItem("neon_score", score);
+        localStorage.setItem("neon_energy", energy);
+
+        console.log("Data Saved");
+
+      } catch (err) {
+
+        console.error("SAVE ERROR:", err);
+
+      }
+    }
+
+    /* =========================
+       TAP SYSTEM
+    ========================= */
+
+    coinBtn.addEventListener("click", async (e) => {
+
+      if (energy <= 0) return;
+
       score += 1;
       energy -= 1;
-      scoreEl.innerText = score;
-      updateEnergyUI();
-      saveData();
+
+      updateUI();
+
       createFloatingText(e.clientX, e.clientY);
-      if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred("medium");
+      }
+
+      await savePlayerData();
+
     });
 
+    /* =========================
+       FLOATING +1 EFFECT
+    ========================= */
+
     function createFloatingText(x, y) {
-      var text = document.createElement('div');
-      text.className = 'floating-text';
-      text.innerText = '+1';
-      text.style.left = (x - 15) + 'px';
-      text.style.top = (y - 30) + 'px';
+
+      const text =
+        document.createElement("div");
+
+      text.className = "floating-text";
+
+      text.innerText = "+1";
+
+      text.style.left = `${x - 15}px`;
+
+      text.style.top = `${y - 30}px`;
+
       document.body.appendChild(text);
-      setTimeout(function() { text.remove(); }, 600);
+
+      setTimeout(() => {
+
+        text.remove();
+
+      }, 600);
     }
 
-    // Energy refill
-    setInterval(function() {
+    /* =========================
+       ENERGY AUTO REFILL
+    ========================= */
+
+    setInterval(async () => {
+
       if (energy < maxEnergy) {
-        energy = Math.min(maxEnergy, energy + 2);
-        updateEnergyUI();
+
+        energy =
+          Math.min(maxEnergy, energy + 2);
+
+        updateUI();
+
+        await savePlayerData();
+
       }
+
     }, 1000);
 
-    // Leaderboard
-    function loadLeaderboard() {
-      db.ref('leaderboard').orderByChild('score').limitToLast(5).on('value', function(snapshot) {
-        var list = document.getElementById('leaderboardList');
-        list.innerHTML = '';
-        if (!snapshot.exists()) {
-          list.innerHTML = '<li><span>No players yet</span></li>';
-          return;
-        }
-        var players = [];
-        snapshot.forEach(function(child) {
-          players.push({ id: child.key, username: child.val().username, score: child.val().score });
-        });
-        players.sort(function(a, b) { return b.score - a.score; });
-        var medals = ['🥇', '🥈', '🥉'];
-        players.forEach(function(player, index) {
-          var li = document.createElement('li');
-          if (player.id === userId) li.classList.add('me');
-          var rank = medals[index] || (index + 1) + '.';
-          li.innerHTML = '<span><span class="lb-rank">' + rank + '</span>@' + player.username + '</span><span>' + player.score.toLocaleString() + '</span>';
-          list.appendChild(li);
-        });
-      });
-    }
+    /* =========================
+       START GAME
+    ========================= */
+
+    loadPlayerData();
+
   </script>
+
 </body>
 </html>
+```
